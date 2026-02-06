@@ -53,8 +53,8 @@ public class Note{
 
     //helper methods
     public boolean contains(int px, int py, int noteWidth, int noteHeight) {
-        return px >= x && px < x + noteWidth && 
-               py >= y && py < y + noteHeight;
+        return px > x && px < x + noteWidth && 
+               py > y && py < y + noteHeight;
     }
 
 }
