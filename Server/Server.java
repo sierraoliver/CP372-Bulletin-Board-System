@@ -11,7 +11,6 @@ public class Server {
         // <port> <board_width> <board_height> <note_width> <note_height> <color1> ... <colorN>
         if (args.length < 6){
             System.err.println("Usage: java Server <port> <board_width> <board_height> <note_width> <note_height> <color1> [color2] [color3] ...");
-            System.err.println("Example: java Server 4554 200 100 20 10 red white green yellow");
             System.exit(1);
         }
 
