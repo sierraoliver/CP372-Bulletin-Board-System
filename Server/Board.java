@@ -78,7 +78,7 @@ public class Board {
             response - either error message or message of all pins
     */
     public synchronized String GET_PINS(){
-        String response = "";
+        String response = "OK GET PINS\n";
 
         //if no pins exists
         if (pins.size() == 0){
@@ -104,6 +104,7 @@ public class Board {
     */
     public synchronized String GET (String color, Integer x, Integer y, String substring){
         String response = "";
+        String okay_message = "OK GET\n";
 
         for (Note note : notes){
             //apply filters only if provided
@@ -125,10 +126,10 @@ public class Board {
         }
 
         if (response.isEmpty()){
-            return "NO_RESULTS";
+            return "NO_RESULTS no notes found";
         }
 
-        return response;
+        return okay_message + response;
     }
 
     /*
