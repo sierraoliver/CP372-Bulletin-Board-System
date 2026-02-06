@@ -116,7 +116,7 @@ public class Board {
                 continue;
             }
 
-            if (substring != null && note.get_message().contains(substring)){
+            if (substring != null && !note.get_message().contains(substring)){
                 continue;
             } 
 
@@ -124,7 +124,7 @@ public class Board {
 
         }
 
-        if (response == ""){
+        if (response.isEmpty()){
             return "NO_RESULTS";
         }
 
@@ -139,34 +139,40 @@ public class Board {
         Returns:
             response - either error message or success message
     */
-    public synchronized String PIN (int x, int y){
-        //check non-negative integers
+    public synchronized String PIN(int x, int y){
         if (x<0 || y<0){
             return "ERROR INVALID_FORMAT requires non-negative integer coordinates";
         }
 
-        //validate bounds
-        if (x + noteWidth > width || y + noteHeight > height){
+        if (x >= width || y >= height){
             return "ERROR OUT_OF_BOUNDS pin needs to be placed within the board boundaries";
-        }    
+        }
 
-        //check if pin is in note
-        for(Note note: notes){
-            if (note.contains(x, y, noteWidth, noteHeight)){
-                note.set_num_pins(note.get_num_pins()+1);
-
-                if (!note.get_pin_status()){
-                    note.set_pin_status(true);
-                }
-
-                pins.add(new Pin(x,y));
-
-                return "OK PIN " + x + " " + y;
+        // Check if pin already exists at this coordinate
+        for (Pin pin : pins) {
+            if (pin.getX() == x && pin.getY() == y) {
+                return "ERROR INVALID_FORMAT pin already exists at this coordinate";
             }
         }
 
-        return "ERROR NO_NOTE_AT_COORDINATE pin must be placed within an existing note";
-        
+        boolean found = false;
+        for(Note note: notes){
+            if (note.contains(x, y, noteWidth, noteHeight)){
+                note.set_num_pins(note.get_num_pins()+1);
+                if (!note.get_pin_status()){
+                    note.set_pin_status(true);
+                }
+                found = true;
+                // DON'T return here — keep looping to pin ALL overlapping notes
+            }
+        }
+
+        if (!found){
+            return "ERROR NO_NOTE_AT_COORDINATE pin must be placed within an existing note";
+        }
+
+        pins.add(new Pin(x,y));
+        return "OK PIN " + x + " " + y;
     }
 
     /*
@@ -218,19 +224,19 @@ public class Board {
         Returns:
             response - message indicating it ran properly and the number of notes removed
     */
-    public synchronized String SHAKE(){
+    public synchronized String SHAKE() {
         int count = 0;
 
-        //check if notes are unpinned
-        for (Note note: notes){
-            if (!note.get_pin_status()){
-                count+=1;
-                notes.remove(note);
+        java.util.Iterator<Note> it = notes.iterator();
+        while (it.hasNext()) {
+            Note note = it.next();
+            if (!note.get_pin_status()) {
+                it.remove();
+                count++;
             }
         }
 
         return "OK SHAKE " + count;
-
     }
 
     /*
