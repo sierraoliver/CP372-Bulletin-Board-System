@@ -155,6 +155,19 @@ public class Board {
             }
         }
 
+        // Check if pin is on the border of a note (not strictly inside)
+        boolean onBorder = false;
+        for (Note note : notes) {
+            if (note.onBorder(x, y, noteWidth, noteHeight)) {
+                onBorder = true;
+                break;
+            }
+        }
+
+        if (onBorder) {
+            return "ERROR INVALID_FORMAT pin cannot be placed on the border of a note, must be strictly inside";
+        }
+
         boolean found = false;
         for(Note note: notes){
             if (note.contains(x, y, noteWidth, noteHeight)){

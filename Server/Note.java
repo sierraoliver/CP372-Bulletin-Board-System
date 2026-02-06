@@ -57,4 +57,10 @@ public class Note{
                py > y && py < y + noteHeight;
     }
 
+    public boolean onBorder(int px, int py, int noteWidth, int noteHeight) {
+        boolean withinBounds = px >= x && px <= x + noteWidth && py >= y && py <= y + noteHeight;
+        boolean strictlyInside = px > x && px < x + noteWidth && py > y && py < y + noteHeight;
+        return withinBounds && !strictlyInside;
+    }
+
 }
